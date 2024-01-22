@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const twilio = require('twilio');
-const client = twilio('ACc118c83a640363b7f71dc07e418d42fb', '02bbf8819bc3782c3ade58e844f49fca');
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+// take the client form process.env
 
 const OTPSchema = new mongoose.Schema({
 	phoneNumber: {
@@ -28,7 +30,7 @@ async function sendVerificationSMS(phoneNumber, otp) {
         
        const message = await client.messages.create({
            body: `Your OTP is ${otp}`,
-           from: '+17244264147', // Your Twilio phone number
+           from: '+17244264147', // Your Twilio phone number take it from process.env
            to: phoneNumber
        });
        console.log("SMS sent successfully: ", message.sid);
