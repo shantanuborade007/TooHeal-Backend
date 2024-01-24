@@ -93,9 +93,6 @@ const VoiceResponse = twilio.twiml.VoiceResponse;
 // };
 
 
-
-
-
 // exports.PerformCall = async(req, res) => {
 //     try {
 //         const { callerPhoneNumber, receiverPhoneNumber } = req.body;
