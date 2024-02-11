@@ -1,8 +1,8 @@
 const express=require("express")
 const router=express.Router();
 
-const {PerformCall}=require("../controller/Communication");
+const {callingPostProcessing}=require("../controller/Communication");
 
-router.post("/call",PerformCall);
+router.put("/callpostprocessing",callingPostProcessing);
 
 module.exports=router;
