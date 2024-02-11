@@ -2,11 +2,13 @@
 const User=require("../models/User")
 require("dotenv").config();
 const OTP=require("../models/OTP");
+const HealerProfile = require("../models/HealerProfile")
+const Userprofile = require("../models/UserProfile")
 
 
 exports.signup = async (req, res) => {
     try {
-        const { name, phoneNumber, dob, gender } = req.body;
+        const { name, phoneNumber, age, gender, role } = req.body;
  
         // Check if user already exists
         const existingUser = await User.findOne({ phoneNumber });
@@ -16,15 +18,45 @@ exports.signup = async (req, res) => {
                 message: "User already exists"
             });
         }
- 
-        // Create new user
-        const user = new User({ name, phoneNumber, dob, gender });
-        await user.save();
- 
-        res.status(200).json({
-            success: true,
-            data: user
-        });
+        if(role==="healer"){
+            console.log("the user is HEALER....")
+            const profileDetails = await HealerProfile.create({
+                image:null,
+                description:null,
+                rate:null,
+                ratingAndReview:null
+            });
+
+            const user = new User({ name, phoneNumber, age, gender,additionDetails: profileDetails._id });
+            await user.save();
+
+            res.status(200).json({
+                success: true,
+                data: user
+            });
+        }
+        else{
+            console.log("the user is USER....")
+            const profileDetails = await Userprofile.create({
+                image: null,
+                wallet_balance: null,
+                transaction: null,
+            });
+           
+            
+            console.log(profileDetails._id);
+            // Create new user
+            const user = new User({ name, phoneNumber, age, gender,additionDetails: profileDetails._id });
+            await user.save();
+     
+            res.status(200).json({
+                success: true,
+                data: user
+            });
+        }
+        
+
+        
     } catch (error) {
         console.error(error);
         res.status(500).json({

@@ -1,5 +1,7 @@
 const twilio = require('twilio');
+
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
 const User=require("../models/User")
 
 exports.sendOtp = async(req, res) => {
@@ -13,9 +15,9 @@ exports.sendOtp = async(req, res) => {
         }
 
         // Send OTP via SMS
-        console.log(process.env.TWILIO_ACCOUNT_SID)
-        console.log(process.env.TWILIO_AUTH_TOKEN)
-        console.log(process.env.VERIFY_SERVICE_SID)
+        // console.log(process.env.TWILIO_ACCOUNT_SID)
+        // console.log(process.env.TWILIO_AUTH_TOKEN)
+        // console.log(process.env.VERIFY_SERVICE_SID)
         const verification = await client.verify.v2.services(process.env.VERIFY_SERVICE_SID)
             .verifications
             .create({to: phoneNumber, channel: 'sms'});
