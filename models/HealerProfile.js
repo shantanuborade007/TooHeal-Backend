@@ -7,6 +7,9 @@ const HealerProfile = new mongoose.Schema({
     description:{
         type:String
     },
+    domain:{
+        type:String
+    },
     rate:{
         type:Number
     },
@@ -18,3 +21,4 @@ const HealerProfile = new mongoose.Schema({
 });
 
 module.exports=mongoose.model("HealerProfile",HealerProfile);
+

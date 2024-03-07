@@ -26,8 +26,7 @@ exports.signup = async (req, res) => {
                 rate:null,
                 ratingAndReview:null
             });
-
-            const user = new User({ name, phoneNumber, age, gender,additionDetails: profileDetails._id });
+            const user = new User({ name, phoneNumber, age, gender, role: 'healer', additionDetails: profileDetails._id });
             await user.save();
 
             res.status(200).json({
