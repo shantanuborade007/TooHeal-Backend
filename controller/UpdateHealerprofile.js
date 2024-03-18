@@ -1,5 +1,6 @@
 const User=require("../models/User");
 const HealerProfile=require("../models/HealerProfile")
+const Userprofile=require("../models/UserProfile")
 const cloudinary = require('cloudinary').v2;
 
 
@@ -107,6 +108,7 @@ exports.getHealerDetails = async (req, res) => {
                     description: '$healerProfile.description',
                     domain: '$healerProfile.domain',
                     rate: '$healerProfile.rate',
+                    callid:'$healerProfile.callid',
                     _id: 0 // Exclude the _id field
                 }
             }
@@ -118,6 +120,61 @@ exports.getHealerDetails = async (req, res) => {
         });
     } catch (error) {
         console.error('Error fetching healer details:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+};
+
+
+
+exports.getUserDetailsByPhoneNumber = async (req, res) => {
+    try {
+        const { phoneNumber } = req.body;
+        console.log("Searching for user with phoneNumber:", phoneNumber);
+
+        // First, find the user by phoneNumber
+        const user = await User.findOne({ phoneNumber: phoneNumber }).lean();
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        // If the user has additionDetails, fetch the corresponding userProfile
+        if (user.additionDetails) {
+            const userProfile = await Userprofile.findById(user.additionDetails).lean();
+            if (userProfile) {
+                // Combine user and userProfile information
+                const userDetails = {
+                    name: user.name,
+                    phoneNumber: user.phoneNumber,
+                    age: user.age, // Assuming these fields exist in your User model
+                    gender: user.gender,
+                    active: user.active,
+                    role: user.role,
+                    image: userProfile.image,
+                    wallet_balance: userProfile.wallet_balance,
+                    // transactions: userProfile.transactions,
+                };
+
+                return res.json({
+                    success: true,
+                    data: userDetails
+                });
+            }
+        }
+
+        // If no userProfile found, just return the user info without userProfile details
+        return res.json({
+            success: true,
+            data: user
+        });
+
+    } catch (error) {
+        console.error('Error fetching user details:', error);
         res.status(500).json({
             success: false,
             message: 'Server error'

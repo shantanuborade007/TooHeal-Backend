@@ -16,9 +16,11 @@ const HealerProfile = new mongoose.Schema({
     ratingAndReview:[{
         type: mongoose.Schema.Types.ObjectId,
         ref:"RatingAndReview"
-    }]
+    }],
+    callid:{
+        type:Number
+    }
 
 });
 
 module.exports=mongoose.model("HealerProfile",HealerProfile);
-
