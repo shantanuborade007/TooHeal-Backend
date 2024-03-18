@@ -27,7 +27,7 @@ exports.updateHealerProfile = async(req,res)=>{
 
 
     try{
-        const {phoneNo,description,domain,rate}=req.body;
+        const {phoneNo,description,domain,rate,callid}=req.body;
         const file = req.files.imageFile; // Corrected line
 
 
@@ -64,6 +64,7 @@ exports.updateHealerProfile = async(req,res)=>{
         healerprofile.description = description;
         healerprofile.domain = domain;
         healerprofile.rate = rate;
+        healerprofile.callid=callid;
         await healerprofile.save();
 
         res.status(201).json({
@@ -145,26 +146,61 @@ exports.getUserDetailsByPhoneNumber = async (req, res) => {
 
         // If the user has additionDetails, fetch the corresponding userProfile
         if (user.additionDetails) {
-            const userProfile = await Userprofile.findById(user.additionDetails).lean();
-            if (userProfile) {
-                // Combine user and userProfile information
-                const userDetails = {
-                    name: user.name,
-                    phoneNumber: user.phoneNumber,
-                    age: user.age, // Assuming these fields exist in your User model
-                    gender: user.gender,
-                    active: user.active,
-                    role: user.role,
-                    image: userProfile.image,
-                    wallet_balance: userProfile.wallet_balance,
-                    // transactions: userProfile.transactions,
-                };
 
-                return res.json({
-                    success: true,
-                    data: userDetails
-                });
+
+            if(user.role==='healer'){
+
+
+                const healerprofile = await HealerProfile.findById(user.additionDetails).lean();
+                if (healerprofile) {
+                    // Combine user and userProfile information
+                    const healerdetails = {
+                        name: user.name,
+                        phoneNumber: user.phoneNumber,
+                        age: user.age, // Assuming these fields exist in your User model
+                        gender: user.gender,
+                        active: user.active,
+                        role: user.role,
+                        image: healerprofile.image,
+                        description:healerprofile.description,
+                        domain:healerprofile.domain,
+                        callid:healerprofile.callid
+
+                    };
+    
+                    return res.json({
+                        success: true,
+                        data: healerdetails
+                    });
+                }
+
             }
+
+            else{
+
+                const userProfile = await Userprofile.findById(user.additionDetails).lean();
+                if (userProfile) {
+                    // Combine user and userProfile information
+                    const userDetails = {
+                        name: user.name,
+                        phoneNumber: user.phoneNumber,
+                        age: user.age, // Assuming these fields exist in your User model
+                        gender: user.gender,
+                        active: user.active,
+                        role: user.role,
+                        image: userProfile.image,
+                        wallet_balance: userProfile.wallet_balance,
+                        // transactions: userProfile.transactions,
+                    };
+    
+                    return res.json({
+                        success: true,
+                        data: userDetails
+                    });
+                }
+            }
+
+           
         }
 
         // If no userProfile found, just return the user info without userProfile details
