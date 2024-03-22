@@ -4,7 +4,7 @@ const router= express.Router()
 const {updateHealerProfile,getHealerDetails,getUserDetailsByPhoneNumber}= require("../controller/UpdateHealerprofile")
 router.put("/updatehealerprofile", updateHealerProfile)
 router.get("/getallhealers",getHealerDetails)
-router.get("/getUserDetails",getUserDetailsByPhoneNumber)
+router.post("/getUserDetails",getUserDetailsByPhoneNumber)
 
 
 module.exports=router;
